@@ -16,6 +16,15 @@ function Navbar() {
         <Link className="nav-link" to="/attendance">Attendance</Link>
         <Link className="nav-link" to="/schedules">Schedules</Link>
       </div>
+      <button
+        className="btn btn-outline-light ms-auto"
+        onClick={() => {
+          localStorage.clear();
+          window.location.href = '/login';
+        }}
+      >
+        Logout
+      </button>
     </nav>
   );
 }

@@ -20,5 +20,6 @@ namespace HospitalManagement.Api.Data
         public DbSet<Staff> Staff { get; set; }
         public DbSet<StaffAttendance> StaffAttendances { get; set; }
         public DbSet<DoctorSchedule> DoctorSchedules { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
