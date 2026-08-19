@@ -26,7 +26,6 @@ A full-stack Hospital Management System built with ASP.NET Core, Entity Framewor
 - Axios
 
 ## Project Structure
-
 hospital_management/
 ├── HospitalManagement.Api/ # ASP.NET Core backend
 │ ├── Controllers/ # API endpoints
