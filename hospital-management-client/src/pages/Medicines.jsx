@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
+import { isAdmin } from '../utils/auth';
 
 function Medicines() {
   const [medicines, setMedicines] = useState([]);
@@ -63,7 +64,9 @@ function Medicines() {
               <td className={m.stockQuantity < 10 ? 'text-danger fw-bold' : ''}>{m.stockQuantity}</td>
               <td>
                 <Link to={`/medicines/edit/${m.id}`} className="btn btn-sm btn-outline-secondary me-2">Edit</Link>
-                <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(m.id)}>Delete</button>
+                {isAdmin() && (
+                  <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(m.id)}>Delete</button>
+                )}
               </td>
             </tr>
           ))}

@@ -61,6 +61,7 @@ namespace HospitalManagement.Api.Controllers
 
         // DELETE: api/patients/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeletePatient(int id)
         {
             var patient = await _context.Patients.FindAsync(id);

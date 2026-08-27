@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
+import { isAdmin } from '../utils/auth';
 
 function Departments() {
   const [departments, setDepartments] = useState([]);
@@ -59,7 +60,9 @@ function Departments() {
               <td>{dept.description}</td>
               <td>
                 <Link to={`/departments/edit/${dept.id}`} className="btn btn-sm btn-outline-secondary me-2">Edit</Link>
-                <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(dept.id)}>Delete</button>
+                {isAdmin() && (
+                  <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(dept.id)}>Delete</button>
+                )}
               </td>
             </tr>
           ))}
