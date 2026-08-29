@@ -9,6 +9,7 @@ function Staff() {
   const [error, setError] = useState(null);
 
   const loadStaff = () => {
+    setLoading(true);
     api.get('/staff')
       .then(response => {
         setStaff(response.data);
@@ -36,42 +37,57 @@ function Staff() {
     }
   };
 
-  if (loading) return <p>Loading staff...</p>;
-  if (error) return <p className="text-danger">{error}</p>;
-
   return (
-    <div className="container mt-5">
-      <h2>Staff</h2>
-      <Link to="/staff/add" className="btn btn-primary mb-3">+ Add Staff</Link>
-      <table className="table table-striped mt-3">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Role</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {staff.map(s => (
-            <tr key={s.id}>
-              <td>{s.id}</td>
-              <td>{s.firstName} {s.lastName}</td>
-              <td>{s.role}</td>
-              <td>{s.phoneNumber}</td>
-              <td>{s.email}</td>
-              <td>
-                <Link to={`/staff/edit/${s.id}`} className="btn btn-sm btn-outline-secondary me-2">Edit</Link>
-               {isAdmin() && (
-                <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(s.id)}>Delete</button>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="container mt-4">
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h3 className="mb-0">Staff</h3>
+        <Link to="/staff/add" className="btn btn-primary">+ Add Staff</Link>
+      </div>
+
+      {error && <div className="alert alert-danger">{error}</div>}
+
+      <div className="card shadow-sm">
+        <div className="card-body p-0">
+          {loading ? (
+            <div className="text-center py-5 text-muted">
+              <div className="spinner-border spinner-border-sm me-2" role="status"></div>
+              Loading staff...
+            </div>
+          ) : staff.length === 0 ? (
+            <div className="text-center py-5 text-muted">No staff yet. Add your first staff member above.</div>
+          ) : (
+            <table className="table table-hover mb-0">
+              <thead className="table-light">
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Role</th>
+                  <th>Phone</th>
+                  <th>Email</th>
+                  <th className="text-end pe-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {staff.map(s => (
+                  <tr key={s.id}>
+                    <td className="text-muted">#{s.id}</td>
+                    <td className="fw-medium">{s.firstName} {s.lastName}</td>
+                    <td><span className="badge bg-light text-dark border">{s.role}</span></td>
+                    <td>{s.phoneNumber}</td>
+                    <td>{s.email}</td>
+                    <td className="text-end pe-3">
+                      <Link to={`/staff/edit/${s.id}`} className="btn btn-sm btn-outline-secondary me-2">Edit</Link>
+                      {isAdmin() && (
+                        <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(s.id)}>Delete</button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

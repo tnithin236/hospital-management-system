@@ -9,6 +9,7 @@ function Departments() {
   const [error, setError] = useState(null);
 
   const loadDepartments = () => {
+    setLoading(true);
     api.get('/departments')
       .then(response => {
         setDepartments(response.data);
@@ -36,38 +37,53 @@ function Departments() {
     }
   };
 
-  if (loading) return <p>Loading departments...</p>;
-  if (error) return <p className="text-danger">{error}</p>;
-
   return (
-    <div className="container mt-5">
-      <h2>Departments</h2>
-      <Link to="/departments/add" className="btn btn-primary mb-3">+ Add Department</Link>
-      <table className="table table-striped mt-3">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {departments.map(dept => (
-            <tr key={dept.id}>
-              <td>{dept.id}</td>
-              <td>{dept.name}</td>
-              <td>{dept.description}</td>
-              <td>
-                <Link to={`/departments/edit/${dept.id}`} className="btn btn-sm btn-outline-secondary me-2">Edit</Link>
-                {isAdmin() && (
-                  <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(dept.id)}>Delete</button>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="container mt-4">
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h3 className="mb-0">Departments</h3>
+        <Link to="/departments/add" className="btn btn-primary">+ Add Department</Link>
+      </div>
+
+      {error && <div className="alert alert-danger">{error}</div>}
+
+      <div className="card shadow-sm">
+        <div className="card-body p-0">
+          {loading ? (
+            <div className="text-center py-5 text-muted">
+              <div className="spinner-border spinner-border-sm me-2" role="status"></div>
+              Loading departments...
+            </div>
+          ) : departments.length === 0 ? (
+            <div className="text-center py-5 text-muted">No departments yet. Add your first department above.</div>
+          ) : (
+            <table className="table table-hover mb-0">
+              <thead className="table-light">
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th className="text-end pe-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {departments.map(dept => (
+                  <tr key={dept.id}>
+                    <td className="text-muted">#{dept.id}</td>
+                    <td className="fw-medium">{dept.name}</td>
+                    <td>{dept.description}</td>
+                    <td className="text-end pe-3">
+                      <Link to={`/departments/edit/${dept.id}`} className="btn btn-sm btn-outline-secondary me-2">Edit</Link>
+                      {isAdmin() && (
+                        <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(dept.id)}>Delete</button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
