@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5033/api',
+  baseURL: 'https://hospital-management-api-0l9f.onrender.com/api',
 });
 
 api.interceptors.request.use((config) => {
