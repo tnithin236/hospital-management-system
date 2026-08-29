@@ -7,6 +7,7 @@ function Medicines() {
   const [medicines, setMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [search, setSearch] = useState('');
 
   const loadMedicines = () => {
     setLoading(true);
@@ -37,12 +38,28 @@ function Medicines() {
     }
   };
 
+  const filtered = medicines.filter(m => {
+    const q = search.toLowerCase();
+    return (
+      m.name.toLowerCase().includes(q) ||
+      (m.manufacturer || '').toLowerCase().includes(q)
+    );
+  });
+
   return (
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h3 className="mb-0">Medicines</h3>
         <Link to="/medicines/add" className="btn btn-primary">+ Add Medicine</Link>
       </div>
+
+      <input
+        type="text"
+        className="form-control mb-3"
+        placeholder="Search by name or manufacturer..."
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+      />
 
       {error && <div className="alert alert-danger">{error}</div>}
 
@@ -53,8 +70,10 @@ function Medicines() {
               <div className="spinner-border spinner-border-sm me-2" role="status"></div>
               Loading medicines...
             </div>
-          ) : medicines.length === 0 ? (
-            <div className="text-center py-5 text-muted">No medicines yet. Add your first medicine above.</div>
+          ) : filtered.length === 0 ? (
+            <div className="text-center py-5 text-muted">
+              {medicines.length === 0 ? 'No medicines yet. Add your first medicine above.' : 'No medicines match your search.'}
+            </div>
           ) : (
             <table className="table table-hover mb-0">
               <thead className="table-light">
@@ -68,7 +87,7 @@ function Medicines() {
                 </tr>
               </thead>
               <tbody>
-                {medicines.map(m => (
+                {filtered.map(m => (
                   <tr key={m.id}>
                     <td className="text-muted">#{m.id}</td>
                     <td className="fw-medium">{m.name}</td>

@@ -7,6 +7,7 @@ function Doctors() {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [search, setSearch] = useState('');
 
   const loadDoctors = () => {
     setLoading(true);
@@ -37,12 +38,29 @@ function Doctors() {
     }
   };
 
+  const filtered = doctors.filter(d => {
+    const q = search.toLowerCase();
+    return (
+      `${d.firstName} ${d.lastName}`.toLowerCase().includes(q) ||
+      (d.specialization || '').toLowerCase().includes(q) ||
+      (d.department?.name || '').toLowerCase().includes(q)
+    );
+  });
+
   return (
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h3 className="mb-0">Doctors</h3>
         <Link to="/doctors/add" className="btn btn-primary">+ Add Doctor</Link>
       </div>
+
+      <input
+        type="text"
+        className="form-control mb-3"
+        placeholder="Search by name, specialization, or department..."
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+      />
 
       {error && <div className="alert alert-danger">{error}</div>}
 
@@ -53,8 +71,10 @@ function Doctors() {
               <div className="spinner-border spinner-border-sm me-2" role="status"></div>
               Loading doctors...
             </div>
-          ) : doctors.length === 0 ? (
-            <div className="text-center py-5 text-muted">No doctors yet. Add your first doctor above.</div>
+          ) : filtered.length === 0 ? (
+            <div className="text-center py-5 text-muted">
+              {doctors.length === 0 ? 'No doctors yet. Add your first doctor above.' : 'No doctors match your search.'}
+            </div>
           ) : (
             <table className="table table-hover mb-0">
               <thead className="table-light">
@@ -68,7 +88,7 @@ function Doctors() {
                 </tr>
               </thead>
               <tbody>
-                {doctors.map(doc => (
+                {filtered.map(doc => (
                   <tr key={doc.id}>
                     <td className="text-muted">#{doc.id}</td>
                     <td className="fw-medium">{doc.firstName} {doc.lastName}</td>

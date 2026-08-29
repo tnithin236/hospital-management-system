@@ -7,6 +7,7 @@ function Staff() {
   const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [search, setSearch] = useState('');
 
   const loadStaff = () => {
     setLoading(true);
@@ -37,12 +38,28 @@ function Staff() {
     }
   };
 
+  const filtered = staff.filter(s => {
+    const q = search.toLowerCase();
+    return (
+      `${s.firstName} ${s.lastName}`.toLowerCase().includes(q) ||
+      (s.role || '').toLowerCase().includes(q)
+    );
+  });
+
   return (
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h3 className="mb-0">Staff</h3>
         <Link to="/staff/add" className="btn btn-primary">+ Add Staff</Link>
       </div>
+
+      <input
+        type="text"
+        className="form-control mb-3"
+        placeholder="Search by name or role..."
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+      />
 
       {error && <div className="alert alert-danger">{error}</div>}
 
@@ -53,8 +70,10 @@ function Staff() {
               <div className="spinner-border spinner-border-sm me-2" role="status"></div>
               Loading staff...
             </div>
-          ) : staff.length === 0 ? (
-            <div className="text-center py-5 text-muted">No staff yet. Add your first staff member above.</div>
+          ) : filtered.length === 0 ? (
+            <div className="text-center py-5 text-muted">
+              {staff.length === 0 ? 'No staff yet. Add your first staff member above.' : 'No staff match your search.'}
+            </div>
           ) : (
             <table className="table table-hover mb-0">
               <thead className="table-light">
@@ -68,7 +87,7 @@ function Staff() {
                 </tr>
               </thead>
               <tbody>
-                {staff.map(s => (
+                {filtered.map(s => (
                   <tr key={s.id}>
                     <td className="text-muted">#{s.id}</td>
                     <td className="fw-medium">{s.firstName} {s.lastName}</td>
